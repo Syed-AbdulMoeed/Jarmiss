@@ -5,22 +5,41 @@ from firecrawl import Firecrawl
 load_dotenv()
 
 def web_search(query: str):
-    """A websearch tool that takes a string query as input and returns a dictionary containing the url and the content in markdown from the internet"""
+    """
+    A websearch tool that takes a string query as input and returns a dictionary containing 
+    webpage urls as keys and their content in markdown as values.
+    """
     try:
-        # Getting initial results
         app = Firecrawl()
         results = app.search(
             query, 
             limit=2,    
             scrape_options={ 
-            "formats": ["markdown"] # return result in readable markdown 
-        })
+                "formats": ["markdown"] 
+            }
+        )
 
-        # Dealing with long outputs by truncating
-        for result in results:
-            if len(result.markdown) > 2000:
-                result.markdown = result.markdown[:2000]
+        web_results = results.web or []
+        output = {}
 
-        return {r.url: r.markdown for r in results}
-    except Exception:
-        return "There was an error with scraping, try another query"
+        for r in web_results:
+            # 1. Safely extract URL (try r.url, then r.metadata.url)
+            url = getattr(r, "url", None)
+            if not url and hasattr(r, "metadata"):
+                url = getattr(r.metadata, "url", None) if not isinstance(r.metadata, dict) else r.metadata.get("url")
+
+            # 2. Extract markdown
+            markdown = getattr(r, "markdown", "") or ""
+
+            # Truncate content
+            if len(markdown) > 100:
+                markdown = markdown[:100]
+
+            if url:
+                output[url] = markdown
+
+        return output
+
+    except Exception as e:
+        return {"Exception": str(e)}
+print(web_search("Who invented the aeroplane"))

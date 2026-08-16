@@ -7,8 +7,10 @@ def execute_python(code: str):
         execution = sandbox.run_code(code)
         return execution.text
 
-e2b_sandbox_tool = FunctionTool.from_defaults(
-    name="execute_python",
-    description="Execute python code in a Jupyter notebook cell and return result",
-    fn=execute_python
-)
+def execute_python_tool():
+    e2b_sandbox_tool = FunctionTool.from_defaults(
+        name="execute_python",
+        description="Execute python code in a Jupyter notebook cell and return result",
+        fn=execute_python
+    )
+    return e2b_sandbox_tool

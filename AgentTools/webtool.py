@@ -1,25 +1,26 @@
 import requests
 from dotenv import load_dotenv
 import os
-# https://docs.ollama.com/capabilities/web-search
+from firecrawl import Firecrawl
 load_dotenv()
-print(os.getenv("OLLAMA_API_KEY"))
 
-res = requests.post(
-    url="https://ollama.com/api/web_search",
-    json = {
-        "query": "Who is Imran Khan",
-        "max_results": 3
-    },
-    headers= {
-        "Authorization": f"Bearer {os.getenv("OLLAMA_API_KEY")}"
-    }
-)
-res = res.json()
-for result in res["results"]:
-    print("----------------------------------")
-    print(result["title"])
-    print(result["url"])
-    #print(result["content"])
+def web_search(query: str):
+    """A websearch tool that takes a string query as input and returns a dictionary containing the url and the content in markdown from the internet"""
+    try:
+        # Getting initial results
+        app = Firecrawl()
+        results = app.search(
+            query, 
+            limit=2,    
+            scrape_options={ 
+            "formats": ["markdown"] # return result in readable markdown 
+        })
 
-# How to deal with the large amount of text from content????
+        # Dealing with long outputs by truncating
+        for result in results:
+            if len(result.markdown) > 2000:
+                result.markdown = result.markdown[:2000]
+
+        return {r.url: r.markdown for r in results}
+    except Exception:
+        return "There was an error with scraping, try another query"

@@ -19,22 +19,25 @@ def web_search(query: str):
             }
         )
 
+        # Get webresults
         web_results = results.web or []
         output = {}
 
+        # Depending on its internal execution .serach returns either a Document or WebSearchResult object which are handled differently
         for r in web_results:
-            # 1. Safely extract URL (try r.url, then r.metadata.url)
+            # Safely extract URL (try r.url, then r.metadata.url)
             url = getattr(r, "url", None)
             if not url and hasattr(r, "metadata"):
                 url = getattr(r.metadata, "url", None) if not isinstance(r.metadata, dict) else r.metadata.get("url")
 
-            # 2. Extract markdown
-            markdown = getattr(r, "markdown", "") or ""
+            # Extract markdown
+            markdown = getattr(r, "markdown", "Cannot scrape this webpage") 
 
-            # Truncate content
-            if len(markdown) > 100:
-                markdown = markdown[:100]
+            # Truncate content TO-DO: This is a potential Bottleneck
+            if len(markdown) > 10000:
+                markdown = markdown[:10000]
 
+            # Add to output
             if url:
                 output[url] = markdown
 
@@ -42,4 +45,3 @@ def web_search(query: str):
 
     except Exception as e:
         return {"Exception": str(e)}
-print(web_search("Who invented the aeroplane"))

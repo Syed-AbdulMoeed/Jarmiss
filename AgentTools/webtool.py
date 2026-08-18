@@ -47,8 +47,10 @@ def web_search(query: str) -> dict:
     except Exception as e:
         return {"Exception": str(e)}
 
-web_search_tool = FunctionTool.from_defaults(
-    name="web_search_tool",
-    description="A websearch tool that takes a string query as input and returns a dictionary containing webpage urls as keys and their content in markdown as values.",
-    fn=web_search
-)
+def web_search_tool():
+    web_search_tool = FunctionTool.from_defaults(
+        name="web_search_tool",
+        description="A websearch tool that takes a string query as input and returns a dictionary containing webpage urls as keys and their content in markdown as values.",
+        fn=web_search
+    )
+    return web_search_tool

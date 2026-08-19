@@ -26,18 +26,13 @@ class Jarmiss:
             
 
             # Set LLM 
-            '''llm = GoogleGenAI(
-                model="gemini-3.5-flash",
+            llm = GoogleGenAI(
+                model="gemini-3.6-flash",
                 generation_config=types.GenerateContentConfig(
                     thinking_config=types.ThinkingConfig(thinking_level="low"),
-                ),)'''
+                ),)
 
-            llm = Groq(
-                model="openai/gpt-oss-120b",
-                    additional_kwargs={
-                        "tool_choice": "auto"
-                    }   
-                )  # or "openai/gpt-oss-120b", "moonshotai/kimi-k2-instruct"
+            #llm = Groq(model="openai/gpt-oss-120b")  # or "openai/gpt-oss-120b", "moonshotai/kimi-k2-instruct"
 
 
             self.jarmiss = FunctionAgent(
@@ -46,6 +41,8 @@ class Jarmiss:
                 system_prompt = (
                     "You are a careful problem-solving agent. "
                     "You have access to a code interpreter for calculations and a web search tool for live information. "
+                    "CRITICAL INTERPRETER INSTRUCTION: The Python interpreter does not capture standard output. "
+                    "To view a result, you must leave it as the last evaluated expression. Do not use print() statements. "
                     "Use your tools efficiently as you have a limited action budget. "
                     "IMPORTANT: Once you have found the answer or computed the result, you MUST respond directly "
                     "to the user with the final answer and STOP calling tools." # Gives it an "exit condition"                ),
@@ -88,6 +85,12 @@ class Jarmiss:
         print(str(response))
 
 agent = Jarmiss()
-agent("How old was Imran Khan when he won the cricket world cup, use the web_search tool")
+#agent("What is the surname of the equine veterinarian mentioned in 1.E Exercises from the chemistry materials licensed by Marisa Alviar-Agnew & Henry Agnew under the CK-12 license in LibreText's Introductory Chemistry materials as compiled 08/21/2023?")
 #agent("What is the area of a circle with radius 3, round to 3d.p")
-    
+#agent("How many studio albums were published by Mercedes Sosa between 2000 and 2009 (included)? You can use the latest 2022 version of english wikipedia.")    
+
+
+
+q1 = """ "I'm making a grocery list for my mom, but she's a professor of botany and she's a real stickler when it comes to categorizing things. I need to add different foods to different categories on the grocery list, but if I make a mistake, she won't buy anything inserted in the wrong category. Here's the list I have so far:\n\nmilk, eggs, flour, whole bean coffee, Oreos, sweet potatoes, fresh basil, plums, green beans, rice, corn, bell pepper, whole allspice, acorns, broccoli, celery, zucchini, lettuce, peanuts\n\nI need to make headings for the fruits and vegetables. Could you please create a list of just the vegetables from my list? If you could do that, then I can figure out how to categorize the rest of the list into the appropriate categories. But remember that my mom is a real stickler, so make sure that no botanical fruits end up on the vegetable list, or she won't get them when she's at the store. Please alphabetize the list of vegetables, and place each item in a comma separated list." """
+
+agent(q1)

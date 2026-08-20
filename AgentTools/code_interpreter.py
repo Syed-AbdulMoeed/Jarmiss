@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Define the tool
-def execute_python(code: str):
+def execute_python(code: str) -> str:
     with Sandbox.create() as sandbox:
         execution = sandbox.run_code(code)
         return execution.text

@@ -13,7 +13,7 @@ def execute_python(code: str):
 def execute_python_tool():
     e2b_sandbox_tool = FunctionTool.from_defaults(
         name="execute_python",
-        description="Execute python code in a Jupyter notebook cell and return result. CRITICAL: DO NOT USE PRINT TO VIEW THE FINAL ANSWER",
+        description="Execute python code in a Jupyter notebook cell and return result. To view a result, you must leave it as the last evaluated expression. Do not use print() statements.",
         fn=execute_python
     )
     return e2b_sandbox_tool

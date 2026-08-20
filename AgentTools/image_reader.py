@@ -4,7 +4,7 @@ from llama_index.core.tools import FunctionTool
 
 load_dotenv()
 
-def analyze_multimodal_file(file_path: str, question: str):
+def analyze_multimodal_file(file_path: str, question: str) -> str:
     """Uploads an image, audio, or video file to Gemini and asks a specific question"""
     client = genai.Client()
     try:
@@ -22,6 +22,12 @@ def analyze_multimodal_file(file_path: str, question: str):
     except Exception as e:
         return f"Failed to analyze file: {e}"
 
+def multimodal_file_tool():
+    return FunctionTool.from_defaults(
+        name="multimodal_file_analysis",
+        description="""Uploads an image, audio, or video file to Gemini and asks a specific question. Takes file path and question as string inputs""",
+        fn=analyze_multimodal_file
+    )
 
-ans = analyze_multimodal_file("TaskFiles/shapes.jpg", "What are the colors of the shapes to the left and right of the blue rectangle")
-print(ans)  
+
+analyze_multimodal_file("TaskFiles/shapes.jpg", "What are the colors of the shapes to the left and right of the blue rectangle")
